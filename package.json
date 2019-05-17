@@ -1,0 +1,19 @@
+{
+  "name": "zx-image-clip",
+  "version": "0.0.1",
+  "description": "An image clip editor component based on react",
+  "main": "index.js",
+  "repository": "git@github.com:joye61/image-clip.git",
+  "author": "joye <89065495@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsc -w",
+    "build:scss": "node-sass --linefeed=lf --output-style=expanded ./scss -o ./dist",
+    "build": "rm -rfv ./dist && tsc && yarn build:scss"
+  },
+  "devDependencies": {
+    "@types/react": "^16.8.17",
+    "@types/react-dom": "^16.8.4",
+    "node-sass": "^4.12.0"
+  }
+}
