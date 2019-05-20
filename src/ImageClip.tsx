@@ -1,5 +1,7 @@
 import { ImageClipOption, ImageClipState } from "./types";
 import React from "react";
+import {WithRect} from "./WithRect";
+import {With2Points} from "./With2Points";
 
 function getValue(value: number | string): string {
   if (typeof value === "number") {
@@ -96,6 +98,7 @@ export class ImageClip extends React.Component<
           <div className="ImageClip-bg">
             <img src={this.imageUrl} alt="" />
           </div>
+          <With2Points />
         </div>
       </div>
     );

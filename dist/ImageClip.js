@@ -17,6 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
+var With2Points_1 = require("./With2Points");
 function getValue(value) {
     if (typeof value === "number") {
         return value + "px";
@@ -87,7 +88,8 @@ var ImageClip = (function (_super) {
                     height: this.scaleHeight + "px"
                 } },
                 react_1.default.createElement("div", { className: "ImageClip-bg" },
-                    react_1.default.createElement("img", { src: this.imageUrl, alt: "" })))));
+                    react_1.default.createElement("img", { src: this.imageUrl, alt: "" })),
+                react_1.default.createElement(With2Points_1.With2Points, null))));
     };
     ImageClip.defaultProps = {
         containerPadding: 10,
