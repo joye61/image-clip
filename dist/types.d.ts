@@ -11,4 +11,10 @@ export interface ChangeResult {
 export interface ImageClipOption {
     source: string | HTMLImageElement;
     onChange?: (res: ChangeResult) => void;
+    containerPadding?: number;
+    containerWidth?: number;
+    containerHeight?: number;
+}
+export interface ImageClipState {
+    loaded: boolean;
 }

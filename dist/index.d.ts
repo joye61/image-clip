@@ -1,1 +1,1 @@
-export { ImageClipComponent } from "./ImageClip";
+export { ImageClip } from "./ImageClip";
