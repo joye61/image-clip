@@ -17,17 +17,18 @@ export interface ImageClipOption {
   containerPadding?: number;
   containerWidth?: number;
   containerHeight?: number;
-  controllPointSize?: number;
+  // 可控制点或线的尺寸
+  controllSize?: number;
 }
 
 export interface ImageClipState {
   loaded: boolean;
 }
 
-export interface With2PointsEditOption {
+export interface WithOption {
   editWidth: number;
   editHeight: number;
-  controllPointSize?: number;
+  controllSize: number;
   imageUrl: string;
   onChange?: () => void;
 }
@@ -37,17 +38,30 @@ export interface Point {
   y: number;
 }
 
-export interface With2PointsEditState {
+export interface WithState {
   p1: Point;
   p2: Point;
   [key: string]: Point;
 }
 
-export interface ControllPointOption {
+export interface ControllOption {
   x: number;
   y: number;
   xmax: number;
   ymax: number;
-  controllPointSize: number;
+  controllSize: number;
   onChange: (p: Point) => void;
+}
+
+export interface ControllRectOption{
+  // p1和p2代表对角线的2两个点
+  p1: Point;
+  p2: Point;
+  // xmax和ymax代表最大可编辑范围
+  xmax: number;
+  ymax: number;
+  // 控制点或线的尺寸
+  controllSize: number;
+  // 变化时触发
+  onChange: (p1: Point, p2: Point) => void;
 }

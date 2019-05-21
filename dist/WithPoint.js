@@ -17,12 +17,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var ControllRect_1 = require("./ControllRect");
+var ControllPoint_1 = require("./ControllPoint");
 var ClipArea_1 = require("./ClipArea");
-var transformValue_1 = require("./transformValue");
-var WithRect = (function (_super) {
-    __extends(WithRect, _super);
-    function WithRect() {
+var With2Points = (function (_super) {
+    __extends(With2Points, _super);
+    function With2Points() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
             p1: {
@@ -34,17 +33,32 @@ var WithRect = (function (_super) {
                 y: _this.props.editHeight
             }
         };
-        _this.onChange = function (p1, p2) {
-            _this.setState({ p1: p1, p2: p2 });
-        };
         return _this;
     }
-    WithRect.prototype.render = function () {
-        var rect = transformValue_1.transformValue(this.state.p1, this.state.p2);
+    With2Points.prototype.getTransformValue = function () {
+        var width = Math.abs(this.state.p1.x - this.state.p2.x);
+        var height = Math.abs(this.state.p1.y - this.state.p2.y);
+        var x = this.state.p1.x < this.state.p2.x ? this.state.p1.x : this.state.p2.x;
+        var y = this.state.p1.y < this.state.p2.y ? this.state.p1.y : this.state.p2.y;
+        return { x: x, y: y, width: width, height: height };
+    };
+    With2Points.prototype.onPointChange = function (p, index) {
+        var _a;
+        this.setState((_a = {}, _a["p" + index] = p, _a));
+    };
+    With2Points.prototype.showPoints = function () {
+        var _this = this;
+        var points = [this.state.p1, this.state.p2];
+        return points.map(function (p, index) {
+            return (react_1.default.createElement(ControllPoint_1.ControllPoint, { key: index, x: p.x, y: p.y, xmax: _this.props.editWidth, ymax: _this.props.editHeight, controllSize: _this.props.controllSize, onChange: function (p) { return _this.onPointChange(p, index + 1); } }));
+        });
+    };
+    With2Points.prototype.render = function () {
+        var rect = this.getTransformValue();
         return (react_1.default.createElement(react_1.default.Fragment, null,
             react_1.default.createElement(ClipArea_1.ClipArea, { rect: rect, imageUrl: this.props.imageUrl, editWidth: this.props.editWidth, editHeight: this.props.editHeight }),
-            react_1.default.createElement(ControllRect_1.ControllRect, { p1: this.state.p1, p2: this.state.p2, xmax: this.props.editWidth, ymax: this.props.editHeight, controllSize: this.props.controllSize, onChange: this.onChange })));
+            this.showPoints()));
     };
-    return WithRect;
+    return With2Points;
 }(react_1.default.Component));
-exports.WithRect = WithRect;
+exports.With2Points = With2Points;

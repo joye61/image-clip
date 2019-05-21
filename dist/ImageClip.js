@@ -17,7 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var With2Points_1 = require("./With2Points");
+var WithRect_1 = require("./WithRect");
 function getValue(value) {
     if (typeof value === "number") {
         return value + "px";
@@ -88,13 +88,13 @@ var ImageClip = (function (_super) {
                 } },
                 react_1.default.createElement("div", { className: "ImageClip-bg" },
                     react_1.default.createElement("img", { src: this.imageUrl, alt: "", draggable: false })),
-                react_1.default.createElement(With2Points_1.With2Points, { editWidth: this.scaleWidth, editHeight: this.scaleHeight, controllPointSize: this.props.controllPointSize, imageUrl: this.imageUrl }))));
+                react_1.default.createElement(WithRect_1.WithRect, { editWidth: this.scaleWidth, editHeight: this.scaleHeight, controllSize: this.props.controllSize, imageUrl: this.imageUrl }))));
     };
     ImageClip.defaultProps = {
         containerPadding: 10,
         containerWidth: 500,
         containerHeight: 500,
-        controllPointSize: 10
+        controllSize: 10
     };
     return ImageClip;
 }(react_1.default.Component));

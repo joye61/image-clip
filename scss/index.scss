@@ -7,7 +7,7 @@
   user-select: none;
   > div {
     position: relative;
-    box-shadow: 0 0 1px rgba(255,255,255,.5);
+    box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
   }
   .ImageClip-bg {
     width: 100%;
@@ -25,10 +25,11 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,.6);
+      background-color: rgba(0, 0, 0, 0.6);
     }
   }
 
+  // 2点式控制
   .ImageEditor-2p {
     position: absolute;
     top: 0;
@@ -51,10 +52,52 @@
     cursor: pointer;
   }
 
-  .ImageClip-2p-area{
+  .ImageClip-area {
     position: absolute;
     overflow: hidden;
     top: 0;
     left: 0;
+  }
+
+  // 矩形控式制框
+  .ImageClip-rect {
+    position: absolute;
+    border: 1px solid #fff;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    cursor: move;
+  }
+  .ImageClip-rect-point {
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    position: absolute;
+  }
+  .ImageClip-rect-line {
+    top: 0;
+    left: 0;
+    position: absolute;
+  }
+  .ImageClip-rect-grid {
+    position: absolute;
+  }
+  .ImageClip-rect-grid-row {
+    left: 0;
+    top: 50%;
+    height: 33.3333%;
+    width: 100%;
+    border-top: 1px dashed #fff;
+    border-bottom: 1px dashed #fff;
+    transform: translate3d(0, -50%, 0);
+  }
+  .ImageClip-rect-grid-col {
+    top: 0;
+    left: 50%;
+    width: 33.3333%;
+    height: 100%;
+    border-left: 1px dashed #fff;
+    border-right: 1px dashed #fff;
+    transform: translate3d(-50%, 0, 0);
   }
 }

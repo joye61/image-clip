@@ -1,7 +1,7 @@
 import { ImageClipOption, ImageClipState } from "./types";
 import React from "react";
 import { WithRect } from "./WithRect";
-import { With2Points } from "./With2Points";
+import { With2Points } from "./WithPoint";
 
 function getValue(value: number | string): string {
   if (typeof value === "number") {
@@ -16,7 +16,7 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
     containerPadding: 10,
     containerWidth: 500,
     containerHeight: 500,
-    controllPointSize: 10
+    controllSize: 10
   };
 
   state: ImageClipState = {
@@ -97,10 +97,10 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
           <div className="ImageClip-bg">
             <img src={this.imageUrl} alt="" draggable={false}/>
           </div>
-          <With2Points
+          <WithRect
             editWidth={this.scaleWidth}
             editHeight={this.scaleHeight}
-            controllPointSize={this.props.controllPointSize}
+            controllSize={this.props.controllSize as number}
             imageUrl={this.imageUrl}
           />
         </div>
