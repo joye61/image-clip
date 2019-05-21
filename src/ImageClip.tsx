@@ -1,7 +1,7 @@
 import { ImageClipOption, ImageClipState } from "./types";
 import React from "react";
-import {WithRect} from "./WithRect";
-import {With2Points} from "./With2Points";
+import { WithRect } from "./WithRect";
+import { With2Points } from "./With2Points";
 
 function getValue(value: number | string): string {
   if (typeof value === "number") {
@@ -11,14 +11,12 @@ function getValue(value: number | string): string {
   }
 }
 
-export class ImageClip extends React.Component<
-  ImageClipOption,
-  ImageClipState
-> {
+export class ImageClip extends React.Component<ImageClipOption, ImageClipState> {
   static defaultProps = {
     containerPadding: 10,
     containerWidth: 500,
-    containerHeight: 500
+    containerHeight: 500,
+    controllPointSize: 10
   };
 
   state: ImageClipState = {
@@ -35,26 +33,24 @@ export class ImageClip extends React.Component<
   scaleWidth = 0;
   // 缩放高度
   scaleHeight = 0;
+  // 缩放比率
+  scale = 1;
 
   computeScaleSize() {
     console.log(this);
-    const editorWidth =
-      (this.props.containerWidth as number) -
-      (this.props.containerPadding as number)*2;
-    const editorHeight =
-      (this.props.containerHeight as number) -
-      (this.props.containerPadding as number)*2;
+    const editorWidth = (this.props.containerWidth as number) - (this.props.containerPadding as number) * 2;
+    const editorHeight = (this.props.containerHeight as number) - (this.props.containerPadding as number) * 2;
 
     if (editorWidth / editorHeight > this.originWidth / this.originHeight) {
       // 以高度为准
-      const rate = this.originHeight / editorHeight;
+      this.scale = this.originHeight / editorHeight;
       this.scaleHeight = editorHeight;
-      this.scaleWidth = this.originWidth / rate;
+      this.scaleWidth = this.originWidth / this.scale;
     } else {
       // 以宽度为准
-      const rate = this.originWidth / editorWidth;
+      this.scale = this.originWidth / editorWidth;
       this.scaleWidth = editorWidth;
-      this.scaleHeight = this.originHeight / rate;
+      this.scaleHeight = this.originHeight / this.scale;
     }
   }
 
@@ -77,9 +73,12 @@ export class ImageClip extends React.Component<
   }
 
   render() {
+    // 图片未加载完成之前不显示编辑器框
     if (this.state.loaded === false) {
       return null;
     }
+
+    // 图片加载完成之后显示编辑器框
     return (
       <div
         className="ImageClip"
@@ -96,9 +95,14 @@ export class ImageClip extends React.Component<
           }}
         >
           <div className="ImageClip-bg">
-            <img src={this.imageUrl} alt="" />
+            <img src={this.imageUrl} alt="" draggable={false}/>
           </div>
-          <With2Points />
+          <With2Points
+            editWidth={this.scaleWidth}
+            editHeight={this.scaleHeight}
+            controllPointSize={this.props.controllPointSize}
+            imageUrl={this.imageUrl}
+          />
         </div>
       </div>
     );

@@ -38,23 +38,22 @@ var ImageClip = (function (_super) {
         _this.originHeight = 0;
         _this.scaleWidth = 0;
         _this.scaleHeight = 0;
+        _this.scale = 1;
         return _this;
     }
     ImageClip.prototype.computeScaleSize = function () {
         console.log(this);
-        var editorWidth = this.props.containerWidth -
-            this.props.containerPadding * 2;
-        var editorHeight = this.props.containerHeight -
-            this.props.containerPadding * 2;
+        var editorWidth = this.props.containerWidth - this.props.containerPadding * 2;
+        var editorHeight = this.props.containerHeight - this.props.containerPadding * 2;
         if (editorWidth / editorHeight > this.originWidth / this.originHeight) {
-            var rate = this.originHeight / editorHeight;
+            this.scale = this.originHeight / editorHeight;
             this.scaleHeight = editorHeight;
-            this.scaleWidth = this.originWidth / rate;
+            this.scaleWidth = this.originWidth / this.scale;
         }
         else {
-            var rate = this.originWidth / editorWidth;
+            this.scale = this.originWidth / editorWidth;
             this.scaleWidth = editorWidth;
-            this.scaleHeight = this.originHeight / rate;
+            this.scaleHeight = this.originHeight / this.scale;
         }
     };
     ImageClip.prototype.componentDidMount = function () {
@@ -88,13 +87,14 @@ var ImageClip = (function (_super) {
                     height: this.scaleHeight + "px"
                 } },
                 react_1.default.createElement("div", { className: "ImageClip-bg" },
-                    react_1.default.createElement("img", { src: this.imageUrl, alt: "" })),
-                react_1.default.createElement(With2Points_1.With2Points, null))));
+                    react_1.default.createElement("img", { src: this.imageUrl, alt: "", draggable: false })),
+                react_1.default.createElement(With2Points_1.With2Points, { editWidth: this.scaleWidth, editHeight: this.scaleHeight, controllPointSize: this.props.controllPointSize, imageUrl: this.imageUrl }))));
     };
     ImageClip.defaultProps = {
         containerPadding: 10,
         containerWidth: 500,
-        containerHeight: 500
+        containerHeight: 500,
+        controllPointSize: 10
     };
     return ImageClip;
 }(react_1.default.Component));
