@@ -1,60 +1,90 @@
-import React from "react";
-import { ControllRectOption, Point } from "./types";
-import { transformValue } from "./transformValue";
+import React from 'react';
+import { ControllRectOption, Point, Rect } from './types';
+import { transformValue } from './transformValue';
+
+type ControllStatus =
+  | 'none'
+  | 'p1'
+  | 'p2'
+  | 'p3'
+  | 'p4'
+  | 'l1'
+  | 'l2'
+  | 'l3'
+  | 'l4'
+  | 'move';
 
 export class ControllRect extends React.Component<ControllRectOption, {}> {
-  rect = transformValue(this.props.p1, this.props.p2);
+  rect: Rect = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0
+  };
 
-  status: "none" | "p1" | "p2" | "p3" | "p4" | "l1" | "l2" | "l3" | "l4" | "move" = "none";
+  // 当前的拖拽状态
+  status: ControllStatus = 'none';
+
+  // 指针的位置
   x = 0;
   y = 0;
+
+  // 两个点的坐标
   p1: Point = { x: 0, y: 0 };
   p2: Point = { x: 0, y: 0 };
 
   controllMove = (e: MouseEvent) => {
-    const currentX = e.clientX;
-    const currentY = e.clientY;
-    
+    // 指针偏移
+    const offsetX = e.clientX - this.x;
+    const offsetY = e.clientY - this.y;
+
     switch (this.status) {
-      case "move":
+      case 'move':
         break;
-      case "p1":
+      case 'p1':
         // let p1 = {
-        //   x: 
+        //   x:
         // }
         break;
-      case "p2":
+      case 'p2':
         break;
-      case "p3":
+      case 'p3':
         break;
-      case "p4":
+      case 'p4':
         break;
-      case "l1":
+      case 'l1':
         break;
-      case "l2":
+      case 'l2':
         break;
-      case "l3":
+      case 'l3':
         break;
-      case "l4":
+      case 'l4':
         break;
       default:
         break;
     }
+
+    // 指针的位置置为新坐标
+    this.x = e.clientX;
+    this.y = e.clientY;
   };
 
   controllUp = (e: MouseEvent) => {
     // 状态初始化
-    this.status = "none";
+    this.status = 'none';
   };
 
   componentDidMount() {
-    document.documentElement.addEventListener("mousemove", this.controllMove);
-    document.documentElement.addEventListener("mouseup", this.controllUp);
+    document.documentElement.addEventListener('mousemove', this.controllMove);
+    document.documentElement.addEventListener('mouseup', this.controllUp);
   }
 
   componentWillUnmount() {
-    document.documentElement.removeEventListener("mousemove", this.controllMove);
-    document.documentElement.removeEventListener("mouseup", this.controllUp);
+    document.documentElement.removeEventListener(
+      'mousemove',
+      this.controllMove
+    );
+    document.documentElement.removeEventListener('mouseup', this.controllUp);
   }
 
   showPoint() {
@@ -62,10 +92,10 @@ export class ControllRect extends React.Component<ControllRectOption, {}> {
     const size = this.props.controllSize;
     // 顺时针方向4个点坐标
     const points = [
-      { x: x, y: y, cursor: "nwse-resize", status: "p1" }, // 左上角
-      { x: x + width, y, cursor: "nesw-resize", status: "p2" }, // 右上角
-      { x: x + width, y: y + height, cursor: "nwse-resize", status: "p3" }, // 右下角
-      { x, y: y + height, cursor: "nesw-resize", status: "p4" } // 左下角
+      { x: x, y: y, cursor: 'nwse-resize', status: 'p1' }, // 左上角
+      { x: x + width, y, cursor: 'nesw-resize', status: 'p2' }, // 右上角
+      { x: x + width, y: y + height, cursor: 'nwse-resize', status: 'p3' }, // 右下角
+      { x, y: y + height, cursor: 'nesw-resize', status: 'p4' } // 左下角
     ];
 
     return points.map(p => {
@@ -74,14 +104,16 @@ export class ControllRect extends React.Component<ControllRectOption, {}> {
           key={p.status}
           className={`ImageClip-rect-point`}
           style={{
-            transform: `translate3d(${p.x - size / 2 - 1}px,${p.y - size / 2 - 1}px,0)`,
+            transform: `translate3d(${p.x - size / 2 - 1}px,${p.y -
+              size / 2 -
+              1}px,0)`,
             width: `${size}px`,
             height: `${size}px`,
             cursor: p.cursor
           }}
           onMouseDown={e => {
             e.stopPropagation();
-            if (this.status === "none") {
+            if (this.status === 'none') {
               this.x = e.clientX;
               this.y = e.clientY;
               this.status = p.status as any;
@@ -97,10 +129,38 @@ export class ControllRect extends React.Component<ControllRectOption, {}> {
     const size = this.props.controllSize;
     // 顺时针方向4条边
     const lines = [
-      { x, y: y - size / 2, cursor: "ns-resize", width, height: size, status: "l1" }, // 上边
-      { x: x + width - size / 2, y, cursor: "ew-resize", width: size, height, status: "l2" }, // 右边
-      { x, y: y + height - size / 2, cursor: "ns-resize", width, height: size, status: "l3" }, // 下边
-      { x: x - size / 2, y, cursor: "ew-resize", width: size, height, status: "l4" } // 左边
+      {
+        x,
+        y: y - size / 2,
+        cursor: 'ns-resize',
+        width,
+        height: size,
+        status: 'l1'
+      }, // 上边
+      {
+        x: x + width - size / 2,
+        y,
+        cursor: 'ew-resize',
+        width: size,
+        height,
+        status: 'l2'
+      }, // 右边
+      {
+        x,
+        y: y + height - size / 2,
+        cursor: 'ns-resize',
+        width,
+        height: size,
+        status: 'l3'
+      }, // 下边
+      {
+        x: x - size / 2,
+        y,
+        cursor: 'ew-resize',
+        width: size,
+        height,
+        status: 'l4'
+      } // 左边
     ];
 
     return lines.map(l => {
@@ -116,7 +176,7 @@ export class ControllRect extends React.Component<ControllRectOption, {}> {
           }}
           onMouseDown={e => {
             e.stopPropagation();
-            if (this.status === "none") {
+            if (this.status === 'none') {
               this.x = e.clientX;
               this.y = e.clientY;
               this.status = l.status as any;
@@ -137,6 +197,13 @@ export class ControllRect extends React.Component<ControllRectOption, {}> {
   }
 
   render() {
+    this.rect = transformValue(this.props.p1, this.props.p2);
+    this.p1 = { x: this.rect.x, y: this.rect.y };
+    this.p2 = {
+      x: this.rect.x + this.rect.width,
+      y: this.rect.y + this.rect.y
+    };
+
     return (
       <div
         className="ImageClip-rect"
@@ -147,10 +214,10 @@ export class ControllRect extends React.Component<ControllRectOption, {}> {
         }}
         onMouseDown={e => {
           e.stopPropagation();
-          if (this.status === "none") {
+          if (this.status === 'none') {
             this.x = e.clientX;
             this.y = e.clientY;
-            this.status = "move";
+            this.status = 'move';
           }
         }}
       >
