@@ -65,11 +65,6 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
     };
   }
 
-  constructor(props: ImageClipOption) {
-    super(props);
-    console.log(111, this.context);
-  }
-
   render() {
     // 图片未加载完成之前不显示编辑器框
     if (this.state.loaded === false) {
