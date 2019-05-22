@@ -17,7 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var WithRect_1 = require("./WithRect");
+var ClipController_1 = require("./ClipController");
 function getValue(value) {
     if (typeof value === "number") {
         return value + "px";
@@ -42,7 +42,6 @@ var ImageClip = (function (_super) {
         return _this;
     }
     ImageClip.prototype.computeScaleSize = function () {
-        console.log(this);
         var editorWidth = this.props.containerWidth - this.props.containerPadding * 2;
         var editorHeight = this.props.containerHeight - this.props.containerPadding * 2;
         if (editorWidth / editorHeight > this.originWidth / this.originHeight) {
@@ -88,13 +87,14 @@ var ImageClip = (function (_super) {
                 } },
                 react_1.default.createElement("div", { className: "ImageClip-bg" },
                     react_1.default.createElement("img", { src: this.imageUrl, alt: "", draggable: false })),
-                react_1.default.createElement(WithRect_1.WithRect, { editWidth: this.scaleWidth, editHeight: this.scaleHeight, controllSize: this.props.controllSize, imageUrl: this.imageUrl }))));
+                react_1.default.createElement(ClipController_1.ClipController, { editWidth: this.scaleWidth, editHeight: this.scaleHeight, controllSize: this.props.controllSize, imageUrl: this.imageUrl, type: this.props.type }))));
     };
     ImageClip.defaultProps = {
         containerPadding: 10,
         containerWidth: 500,
         containerHeight: 500,
-        controllSize: 10
+        controllSize: 10,
+        type: "point"
     };
     return ImageClip;
 }(react_1.default.Component));

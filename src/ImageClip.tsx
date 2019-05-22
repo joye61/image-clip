@@ -1,7 +1,6 @@
-import { ImageClipOption, ImageClipState } from "./types";
+import { ImageClipOption, ImageClipState, ClipType } from "./types";
 import React from "react";
-import { WithRect } from "./WithRect";
-import { With2Points } from "./WithPoint";
+import { ClipController } from "./ClipController";
 
 function getValue(value: number | string): string {
   if (typeof value === "number") {
@@ -16,7 +15,8 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
     containerPadding: 10,
     containerWidth: 500,
     containerHeight: 500,
-    controllSize: 10
+    controllSize: 10,
+    type: "point"
   };
 
   state: ImageClipState = {
@@ -37,7 +37,6 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
   scale = 1;
 
   computeScaleSize() {
-    console.log(this);
     const editorWidth = (this.props.containerWidth as number) - (this.props.containerPadding as number) * 2;
     const editorHeight = (this.props.containerHeight as number) - (this.props.containerPadding as number) * 2;
 
@@ -97,11 +96,12 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
           <div className="ImageClip-bg">
             <img src={this.imageUrl} alt="" draggable={false}/>
           </div>
-          <WithRect
+          <ClipController
             editWidth={this.scaleWidth}
             editHeight={this.scaleHeight}
             controllSize={this.props.controllSize as number}
             imageUrl={this.imageUrl}
+            type={this.props.type as ClipType}
           />
         </div>
       </div>

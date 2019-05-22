@@ -11,6 +11,8 @@ export interface ChangeResult {
   rect: Rect;
 }
 
+export type ClipType = "rect" | "point";
+
 export interface ImageClipOption {
   source: string | HTMLImageElement;
   onChange?: (res: ChangeResult) => void;
@@ -19,37 +21,33 @@ export interface ImageClipOption {
   containerHeight?: number;
   // 可控制点或线的尺寸
   controllSize?: number;
+  // 裁剪框的类型
+  type?: ClipType;
 }
 
 export interface ImageClipState {
   loaded: boolean;
 }
 
-export interface WithOption {
+export interface ClipControllerOption {
   editWidth: number;
   editHeight: number;
   controllSize: number;
   imageUrl: string;
+  type: ClipType; 
   onChange?: () => void;
 }
 
+// 点的坐标
 export interface Point {
   x: number;
   y: number;
 }
 
-export interface WithState {
-  p1: Point;
-  p2: Point;
-  [key: string]: Point;
-}
-
-
 // 两个虚拟对角点的坐标
 export interface RectState {
   p1: Point;
   p2: Point;
-  // [key: string]: Point;
 }
 
 export interface ControllOption {
@@ -61,7 +59,7 @@ export interface ControllOption {
   onChange: (p: Point) => void;
 }
 
-export interface ControllRectOption{
+export interface WithOption{
   // p1和p2代表对角线的2两个点
   p1: Point;
   p2: Point;
