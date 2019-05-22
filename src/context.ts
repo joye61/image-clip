@@ -1,5 +1,4 @@
 import React from "react";
-import { ClipType, PointType } from "./types";
 
 interface ImageClipContext {
   controllSize: number;
@@ -12,5 +11,3 @@ export const context = React.createContext<ImageClipContext>({
   clipType: "rect",
   pointType: "rounded"
 });
-
-export const { Provider, Consumer } = context;

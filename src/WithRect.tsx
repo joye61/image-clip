@@ -1,5 +1,4 @@
 import React from "react";
-import { WithOption, Rect } from "./types";
 import { transformValue, rangeCheck } from "./transformValue";
 import { context } from "./context";
 
@@ -115,14 +114,16 @@ export class WithRect extends React.Component<WithOption, {}> {
   };
 
   controllUp = (e: MouseEvent) => {
-    // 状态初始化
-    this.status = "none";
-    // p1和p2初始化，为下一次控制做准备
-    const rect = transformValue(this.props.p1, this.props.p2);
-    this.props.onChange({
-      p1: { x: rect.x, y: rect.y },
-      p2: { x: rect.x + rect.width, y: rect.y + rect.height }
-    });
+    if (this.status !== "none") {
+      // 状态初始化
+      this.status = "none";
+      // p1和p2初始化，为下一次控制做准备
+      const rect = transformValue(this.props.p1, this.props.p2);
+      this.props.onChange({
+        p1: { x: rect.x, y: rect.y },
+        p2: { x: rect.x + rect.width, y: rect.y + rect.height }
+      });
+    }
   };
 
   componentDidMount() {

@@ -1,7 +1,6 @@
-import { ImageClipOption, ImageClipState, ClipType, Rect, PointType } from "./types";
 import React from "react";
 import { ClipController } from "./ClipController";
-import { context, Provider } from "./context";
+import { context } from "./context";
 
 export class ImageClip extends React.Component<ImageClipOption, ImageClipState> {
   static defaultProps = {
@@ -66,7 +65,7 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
     };
   }
 
-  constructor(props: ImageClipOption){
+  constructor(props: ImageClipOption) {
     super(props);
     console.log(111, this.context);
   }
@@ -83,45 +82,45 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
 
     // 图片加载完成之后显示编辑器框
     return (
+      <div
+        className="ImageClip"
+        style={{
+          width: `${this.props.containerWidth}px`,
+          height: `${this.props.containerHeight}px`,
+          padding: `${this.props.containerPadding}px`
+        }}
+      >
         <div
-          className="ImageClip"
           style={{
-            width: `${this.props.containerWidth}px`,
-            height: `${this.props.containerHeight}px`,
-            padding: `${this.props.containerPadding}px`
+            width: `${this.scaleWidth}px`,
+            height: `${this.scaleHeight}px`
           }}
         >
-          <div
-            style={{
-              width: `${this.scaleWidth}px`,
-              height: `${this.scaleHeight}px`
-            }}
-          >
-            <div className="ImageClip-bg">
-              <img src={this.imageUrl} alt="" draggable={false} />
-            </div>
-            <ClipController
-              editWidth={this.scaleWidth}
-              editHeight={this.scaleHeight}
-              imageUrl={this.imageUrl}
-              onChange={(rect: Rect) => {
-                if (this.props.onChange && typeof this.props.onChange === "function") {
-                  this.props.onChange({
-                    imageWidth: this.originWidth,
-                    imageHeight: this.originHeight,
-                    src: this.imageUrl,
-                    rect: {
-                      x: rect.x * this.scale,
-                      y: rect.y * this.scale,
-                      width: rect.width * this.scale,
-                      height: rect.height * this.scale
-                    }
-                  });
-                }
-              }}
-            />
+          <div className="ImageClip-bg">
+            <img src={this.imageUrl} alt="" draggable={false} />
           </div>
+          <ClipController
+            editWidth={this.scaleWidth}
+            editHeight={this.scaleHeight}
+            imageUrl={this.imageUrl}
+            onChange={(rect: Rect) => {
+              if (this.props.onChange && typeof this.props.onChange === "function") {
+                this.props.onChange({
+                  imageWidth: this.originWidth,
+                  imageHeight: this.originHeight,
+                  src: this.imageUrl,
+                  rect: {
+                    x: rect.x * this.scale,
+                    y: rect.y * this.scale,
+                    width: rect.width * this.scale,
+                    height: rect.height * this.scale
+                  }
+                });
+              }
+            }}
+          />
         </div>
+      </div>
     );
   }
 }

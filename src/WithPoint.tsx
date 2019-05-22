@@ -1,5 +1,4 @@
 import React from "react";
-import { WithOption, Point } from "./types";
 import { rangeCheck } from "./transformValue";
 import { context } from "./context";
 

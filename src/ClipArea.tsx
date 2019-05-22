@@ -1,5 +1,4 @@
 import React from "react";
-import { Rect } from "./types";
 
 interface ClipAreaOption {
   rect: Rect;

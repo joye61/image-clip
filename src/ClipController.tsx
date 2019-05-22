@@ -3,8 +3,7 @@ import { WithRect } from "./WithRect";
 import { WithPoint } from "./WithPoint";
 import { ClipArea } from "./ClipArea";
 import { transformValue } from "./transformValue";
-import {context} from "./context";
-import { ClipControllerOption, RectState, Rect } from "./types";
+import { context } from "./context";
 
 export class ClipController extends React.Component<ClipControllerOption, RectState> {
   state: RectState = {

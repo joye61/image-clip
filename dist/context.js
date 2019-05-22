@@ -9,4 +9,3 @@ exports.context = react_1.default.createContext({
     clipType: "rect",
     pointType: "rounded"
 });
-exports.Provider = exports.context.Provider, exports.Consumer = exports.context.Consumer;

@@ -109,12 +109,14 @@ var WithRect = (function (_super) {
             _this.y = e.clientY;
         };
         _this.controllUp = function (e) {
-            _this.status = "none";
-            var rect = transformValue_1.transformValue(_this.props.p1, _this.props.p2);
-            _this.props.onChange({
-                p1: { x: rect.x, y: rect.y },
-                p2: { x: rect.x + rect.width, y: rect.y + rect.height }
-            });
+            if (_this.status !== "none") {
+                _this.status = "none";
+                var rect = transformValue_1.transformValue(_this.props.p1, _this.props.p2);
+                _this.props.onChange({
+                    p1: { x: rect.x, y: rect.y },
+                    p2: { x: rect.x + rect.width, y: rect.y + rect.height }
+                });
+            }
         };
         return _this;
     }

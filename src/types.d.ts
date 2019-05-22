@@ -1,21 +1,21 @@
-export interface Rect {
+interface Rect {
   x: number;
   y: number;
   width: number;
   height: number;
 }
 
-export interface ChangeResult {
+interface ChangeResult {
   src: string;
   imageWidth: number;
   imageHeight: number;
   rect: Rect;
 }
 
-export type ClipType = "rect" | "point";
-export type PointType = "rounded" | "square";
+type ClipType = "rect" | "point";
+type PointType = "rounded" | "square";
 
-export interface ImageClipOption {
+interface ImageClipOption {
   // 图片的来源，可以是链接或图片元素
   source: string | HTMLImageElement;
   onChange?: (res: ChangeResult) => void;
@@ -33,30 +33,29 @@ export interface ImageClipOption {
   pointType?: PointType;
 }
 
-export interface ImageClipState {
+interface ImageClipState {
   loaded: boolean;
 }
 
-export interface ClipControllerOption {
+interface ClipControllerOption {
   editWidth: number;
   editHeight: number;
   imageUrl: string;
   onChange: (rect: Rect) => void;
 }
 
-// 点的坐标
-export interface Point {
+interface Point {
   x: number;
   y: number;
 }
 
 // 两个虚拟对角点的坐标
-export interface RectState {
+interface RectState {
   p1: Point;
   p2: Point;
 }
 
-export interface WithOption{
+interface WithOption{
   // p1和p2代表对角线的2两个点
   p1: Point;
   p2: Point;
