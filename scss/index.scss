@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #000;
+  background-color: #333;
   box-sizing: border-box;
   user-select: none;
   > div {
@@ -67,20 +67,12 @@
     left: 0;
     box-sizing: border-box;
     cursor: move;
+    > span {
+      position: absolute;
+    }
   }
   .ImageClip-rect-point {
-    top: 0;
-    left: 0;
     background-color: #fff;
-    position: absolute;
-  }
-  .ImageClip-rect-line {
-    top: 0;
-    left: 0;
-    position: absolute;
-  }
-  .ImageClip-rect-grid {
-    position: absolute;
   }
   .ImageClip-rect-grid-row {
     left: 0;

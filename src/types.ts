@@ -44,6 +44,14 @@ export interface WithState {
   [key: string]: Point;
 }
 
+
+// 两个虚拟对角点的坐标
+export interface RectState {
+  p1: Point;
+  p2: Point;
+  // [key: string]: Point;
+}
+
 export interface ControllOption {
   x: number;
   y: number;
@@ -62,6 +70,5 @@ export interface ControllRectOption{
   ymax: number;
   // 控制点或线的尺寸
   controllSize: number;
-  // 变化时触发
-  onChange: (p1: Point, p2: Point) => void;
+  onChange: (rectState: RectState) => void;
 }

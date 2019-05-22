@@ -12,6 +12,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -22,43 +33,85 @@ var ControllRect = (function (_super) {
     __extends(ControllRect, _super);
     function ControllRect() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.rect = transformValue_1.transformValue(_this.props.p1, _this.props.p2);
+        _this.rect = {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0
+        };
         _this.status = "none";
         _this.x = 0;
         _this.y = 0;
-        _this.p1 = { x: 0, y: 0 };
-        _this.p2 = { x: 0, y: 0 };
         _this.controllMove = function (e) {
-            var currentX = e.clientX;
-            var currentY = e.clientY;
+            var offsetX = e.clientX - _this.x;
+            var offsetY = e.clientY - _this.y;
+            var p1 = __assign({}, _this.props.p1);
+            var p2 = __assign({}, _this.props.p2);
             switch (_this.status) {
                 case "move":
                     break;
-                case "p1":
+                case "lt":
+                    p1.x += offsetX;
+                    p1.y += offsetY;
+                    p1.x = _this.xRangeCheck(p1.x);
+                    p1.y = _this.yRangeCheck(p1.y);
                     break;
-                case "p2":
+                case "rt":
+                    p1.y += offsetY;
+                    p2.x += offsetX;
+                    p1.y = _this.yRangeCheck(p1.y);
+                    p2.x = _this.xRangeCheck(p2.x);
                     break;
-                case "p3":
+                case "rb":
+                    p2.x += offsetX;
+                    p2.y += offsetY;
+                    p2.x = _this.xRangeCheck(p2.x);
+                    p2.y = _this.yRangeCheck(p2.y);
                     break;
-                case "p4":
+                case "lb":
+                    p1.x += offsetX;
+                    p2.y += offsetY;
+                    p1.x = _this.xRangeCheck(p1.x);
+                    p2.y = _this.yRangeCheck(p2.y);
                     break;
-                case "l1":
+                case "t":
+                    p1.y += offsetY;
+                    p1.y = _this.yRangeCheck(p1.y);
                     break;
-                case "l2":
+                case "r":
+                    p2.x += offsetX;
+                    p2.x = _this.xRangeCheck(p2.x);
                     break;
-                case "l3":
+                case "b":
+                    p2.y += offsetY;
+                    p2.y = _this.yRangeCheck(p2.y);
                     break;
-                case "l4":
+                case "l":
+                    p1.x += offsetX;
+                    p1.x = _this.xRangeCheck(p1.x);
                     break;
                 default:
                     break;
             }
+            _this.props.onChange({ p1: p1, p2: p2 });
+            _this.x = e.clientX;
+            _this.y = e.clientY;
         };
         _this.controllUp = function (e) {
             _this.status = "none";
         };
         return _this;
     }
+    ControllRect.prototype.xRangeCheck = function (x) {
+        x = x < 0 ? 0 : x;
+        x = x > this.props.xmax ? this.props.xmax : x;
+        return x;
+    };
+    ControllRect.prototype.yRangeCheck = function (y) {
+        y = y < 0 ? 0 : y;
+        y = y > this.props.ymax ? this.props.ymax : y;
+        return y;
+    };
     ControllRect.prototype.componentDidMount = function () {
         document.documentElement.addEventListener("mousemove", this.controllMove);
         document.documentElement.addEventListener("mouseup", this.controllUp);
@@ -69,63 +122,79 @@ var ControllRect = (function (_super) {
     };
     ControllRect.prototype.showPoint = function () {
         var _this = this;
-        var _a = this.rect, x = _a.x, y = _a.y, width = _a.width, height = _a.height;
-        var size = this.props.controllSize;
+        var offsetPx = -this.props.controllSize / 2 - 1 + "px";
         var points = [
-            { x: x, y: y, cursor: "nwse-resize", status: "p1" },
-            { x: x + width, y: y, cursor: "nesw-resize", status: "p2" },
-            { x: x + width, y: y + height, cursor: "nwse-resize", status: "p3" },
-            { x: x, y: y + height, cursor: "nesw-resize", status: "p4" }
+            { left: offsetPx, top: offsetPx, cursor: "nwse-resize", status: "lt" },
+            { right: offsetPx, top: offsetPx, cursor: "nesw-resize", status: "rt" },
+            { right: offsetPx, bottom: offsetPx, cursor: "nwse-resize", status: "rb" },
+            { left: offsetPx, bottom: offsetPx, cursor: "nesw-resize", status: "lb" }
         ];
-        return points.map(function (p) {
-            return (react_1.default.createElement("span", { key: p.status, className: "ImageClip-rect-point", style: {
-                    transform: "translate3d(" + (p.x - size / 2 - 1) + "px," + (p.y - size / 2 - 1) + "px,0)",
-                    width: size + "px",
-                    height: size + "px",
-                    cursor: p.cursor
-                }, onMouseDown: function (e) {
+        return points.map(function (item) {
+            var pointStyle = __assign({ width: _this.props.controllSize + "px", height: _this.props.controllSize + "px" }, item);
+            delete pointStyle.status;
+            return (react_1.default.createElement("span", { key: item.status, className: "ImageClip-rect-point", style: pointStyle, onMouseDown: function (e) {
                     e.stopPropagation();
                     if (_this.status === "none") {
                         _this.x = e.clientX;
                         _this.y = e.clientY;
-                        _this.status = p.status;
+                        _this.status = item.status;
                     }
                 } }));
         });
     };
     ControllRect.prototype.showLine = function () {
         var _this = this;
-        var _a = this.rect, x = _a.x, y = _a.y, width = _a.width, height = _a.height;
-        var size = this.props.controllSize;
+        var offsetPx = -this.props.controllSize / 2 - 1 + "px";
         var lines = [
-            { x: x, y: y - size / 2, cursor: "ns-resize", width: width, height: size, status: "l1" },
-            { x: x + width - size / 2, y: y, cursor: "ew-resize", width: size, height: height, status: "l2" },
-            { x: x, y: y + height - size / 2, cursor: "ns-resize", width: width, height: size, status: "l3" },
-            { x: x - size / 2, y: y, cursor: "ew-resize", width: size, height: height, status: "l4" }
+            {
+                left: 0,
+                top: offsetPx,
+                cursor: "ns-resize",
+                width: "100%",
+                height: this.props.controllSize,
+                status: "t"
+            },
+            {
+                top: 0,
+                right: offsetPx,
+                cursor: "ew-resize",
+                width: this.props.controllSize,
+                height: "100%",
+                status: "r"
+            },
+            {
+                left: 0,
+                bottom: offsetPx,
+                cursor: "ns-resize",
+                width: "100%",
+                height: this.props.controllSize,
+                status: "b"
+            },
+            {
+                top: 0,
+                left: offsetPx,
+                cursor: "ew-resize",
+                height: "100%",
+                width: this.props.controllSize,
+                status: "l"
+            }
         ];
-        return lines.map(function (l) {
-            return (react_1.default.createElement("span", { key: l.status, className: "ImageClip-rect-line", style: {
-                    transform: "translate3d(" + l.x + "px," + l.y + "px,0)",
-                    width: l.width + "px",
-                    height: l.height + "px",
-                    cursor: l.cursor
-                }, onMouseDown: function (e) {
+        return lines.map(function (item) {
+            var lineStyle = __assign({}, item);
+            delete lineStyle.status;
+            return (react_1.default.createElement("span", { key: item.status, className: "ImageClip-rect-line", style: lineStyle, onMouseDown: function (e) {
                     e.stopPropagation();
                     if (_this.status === "none") {
                         _this.x = e.clientX;
                         _this.y = e.clientY;
-                        _this.status = l.status;
+                        _this.status = item.status;
                     }
                 } }));
         });
     };
-    ControllRect.prototype.showGrid = function () {
-        return (react_1.default.createElement(react_1.default.Fragment, null,
-            react_1.default.createElement("span", { className: "ImageClip-rect-grid ImageClip-rect-grid-row" }),
-            react_1.default.createElement("span", { className: "ImageClip-rect-grid ImageClip-rect-grid-col" })));
-    };
     ControllRect.prototype.render = function () {
         var _this = this;
+        this.rect = transformValue_1.transformValue(this.props.p1, this.props.p2);
         return (react_1.default.createElement("div", { className: "ImageClip-rect", style: {
                 transform: "translate3d(" + this.rect.x + "px," + this.rect.y + "px,0)",
                 width: this.rect.width + "px",
@@ -138,8 +207,9 @@ var ControllRect = (function (_super) {
                     _this.status = "move";
                 }
             } },
+            react_1.default.createElement("span", { className: "ImageClip-rect-grid-row" }),
+            react_1.default.createElement("span", { className: "ImageClip-rect-grid-col" }),
             this.showLine(),
-            this.showGrid(),
             this.showPoint()));
     };
     return ControllRect;

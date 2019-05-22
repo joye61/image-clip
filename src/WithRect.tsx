@@ -2,10 +2,11 @@ import React from "react";
 import { ControllRect } from "./ControllRect";
 import { ClipArea } from "./ClipArea";
 import { transformValue } from "./transformValue";
-import { WithOption, WithState, Rect, Point } from "./types";
+import { WithOption, Rect, Point, RectState } from "./types";
+import { RectContext } from "./RectState";
 
-export class WithRect extends React.Component<WithOption, WithState> {
-  state: WithState = {
+export class WithRect extends React.Component<WithOption, RectState> {
+  state: RectState = {
     p1: {
       x: 0,
       y: 0
@@ -16,8 +17,8 @@ export class WithRect extends React.Component<WithOption, WithState> {
     }
   };
 
-  onChange = (p1: Point, p2: Point) => {
-    this.setState({ p1, p2 });
+  onChange = (rectState: RectState) => {
+    this.setState({ ...rectState });
   };
 
   render() {
