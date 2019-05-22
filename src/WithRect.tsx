@@ -1,6 +1,7 @@
 import React from "react";
 import { WithOption, Rect } from "./types";
 import { transformValue, rangeCheck } from "./transformValue";
+import { context } from "./context";
 
 type ControllStatus =
   | "none" // 非控制状态
@@ -15,6 +16,8 @@ type ControllStatus =
   | "move"; // 中间
 
 export class WithRect extends React.Component<WithOption, {}> {
+  static contextType = context;
+
   // 截取框的准确信息
   rect: Rect = {
     x: 0,
@@ -134,20 +137,24 @@ export class WithRect extends React.Component<WithOption, {}> {
 
   showPoint() {
     // 顺时针方向4个点坐标
-    const offsetPx = `${-this.props.controllSize / 2 - 1}px`;
+    const offsetPx = `${-this.context.controllSize / 2 - 1}px`;
+
+    const borderRadius = this.context.pointType === "rounded" ? "50%" : "initial";
+
     const points = [
-      { left: offsetPx, top: offsetPx, cursor: "nwse-resize", status: "lt" }, // 左上角
-      { right: offsetPx, top: offsetPx, cursor: "nesw-resize", status: "rt" }, // 右上角
-      { right: offsetPx, bottom: offsetPx, cursor: "nwse-resize", status: "rb" }, // 右下角
-      { left: offsetPx, bottom: offsetPx, cursor: "nesw-resize", status: "lb" } // 左下角
+      { borderRadius, left: offsetPx, top: offsetPx, cursor: "nwse-resize", status: "lt" }, // 左上角
+      { borderRadius, right: offsetPx, top: offsetPx, cursor: "nesw-resize", status: "rt" }, // 右上角
+      { borderRadius, right: offsetPx, bottom: offsetPx, cursor: "nwse-resize", status: "rb" }, // 右下角
+      { borderRadius, left: offsetPx, bottom: offsetPx, cursor: "nesw-resize", status: "lb" } // 左下角
     ];
 
     return points.map(item => {
       const pointStyle = {
-        width: `${this.props.controllSize}px`,
-        height: `${this.props.controllSize}px`,
+        width: `${this.context.controllSize}px`,
+        height: `${this.context.controllSize}px`,
         ...item
       };
+
       delete pointStyle.status;
 
       return (
@@ -170,21 +177,21 @@ export class WithRect extends React.Component<WithOption, {}> {
 
   showLine() {
     // 顺时针方向4条边
-    const offsetPx = `${-this.props.controllSize / 2 - 1}px`;
+    const offsetPx = `${-this.context.controllSize / 2 - 1}px`;
     const lines = [
       {
         left: 0,
         top: offsetPx,
         cursor: "ns-resize",
         width: "100%",
-        height: this.props.controllSize,
+        height: this.context.controllSize,
         status: "t"
       }, // 上边
       {
         top: 0,
         right: offsetPx,
         cursor: "ew-resize",
-        width: this.props.controllSize,
+        width: this.context.controllSize,
         height: "100%",
         status: "r"
       }, // 右边
@@ -193,7 +200,7 @@ export class WithRect extends React.Component<WithOption, {}> {
         bottom: offsetPx,
         cursor: "ns-resize",
         width: "100%",
-        height: this.props.controllSize,
+        height: this.context.controllSize,
         status: "b"
       }, // 下边
       {
@@ -201,7 +208,7 @@ export class WithRect extends React.Component<WithOption, {}> {
         left: offsetPx,
         cursor: "ew-resize",
         height: "100%",
-        width: this.props.controllSize,
+        width: this.context.controllSize,
         status: "l"
       } // 左边
     ];

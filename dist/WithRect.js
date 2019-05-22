@@ -29,6 +29,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 var transformValue_1 = require("./transformValue");
+var context_1 = require("./context");
 var WithRect = (function (_super) {
     __extends(WithRect, _super);
     function WithRect() {
@@ -127,15 +128,16 @@ var WithRect = (function (_super) {
     };
     WithRect.prototype.showPoint = function () {
         var _this = this;
-        var offsetPx = -this.props.controllSize / 2 - 1 + "px";
+        var offsetPx = -this.context.controllSize / 2 - 1 + "px";
+        var borderRadius = this.context.pointType === "rounded" ? "50%" : "initial";
         var points = [
-            { left: offsetPx, top: offsetPx, cursor: "nwse-resize", status: "lt" },
-            { right: offsetPx, top: offsetPx, cursor: "nesw-resize", status: "rt" },
-            { right: offsetPx, bottom: offsetPx, cursor: "nwse-resize", status: "rb" },
-            { left: offsetPx, bottom: offsetPx, cursor: "nesw-resize", status: "lb" }
+            { borderRadius: borderRadius, left: offsetPx, top: offsetPx, cursor: "nwse-resize", status: "lt" },
+            { borderRadius: borderRadius, right: offsetPx, top: offsetPx, cursor: "nesw-resize", status: "rt" },
+            { borderRadius: borderRadius, right: offsetPx, bottom: offsetPx, cursor: "nwse-resize", status: "rb" },
+            { borderRadius: borderRadius, left: offsetPx, bottom: offsetPx, cursor: "nesw-resize", status: "lb" }
         ];
         return points.map(function (item) {
-            var pointStyle = __assign({ width: _this.props.controllSize + "px", height: _this.props.controllSize + "px" }, item);
+            var pointStyle = __assign({ width: _this.context.controllSize + "px", height: _this.context.controllSize + "px" }, item);
             delete pointStyle.status;
             return (react_1.default.createElement("span", { key: item.status, className: "ImageClip-rect-point", style: pointStyle, onMouseDown: function (e) {
                     e.stopPropagation();
@@ -149,21 +151,21 @@ var WithRect = (function (_super) {
     };
     WithRect.prototype.showLine = function () {
         var _this = this;
-        var offsetPx = -this.props.controllSize / 2 - 1 + "px";
+        var offsetPx = -this.context.controllSize / 2 - 1 + "px";
         var lines = [
             {
                 left: 0,
                 top: offsetPx,
                 cursor: "ns-resize",
                 width: "100%",
-                height: this.props.controllSize,
+                height: this.context.controllSize,
                 status: "t"
             },
             {
                 top: 0,
                 right: offsetPx,
                 cursor: "ew-resize",
-                width: this.props.controllSize,
+                width: this.context.controllSize,
                 height: "100%",
                 status: "r"
             },
@@ -172,7 +174,7 @@ var WithRect = (function (_super) {
                 bottom: offsetPx,
                 cursor: "ns-resize",
                 width: "100%",
-                height: this.props.controllSize,
+                height: this.context.controllSize,
                 status: "b"
             },
             {
@@ -180,7 +182,7 @@ var WithRect = (function (_super) {
                 left: offsetPx,
                 cursor: "ew-resize",
                 height: "100%",
-                width: this.props.controllSize,
+                width: this.context.controllSize,
                 status: "l"
             }
         ];
@@ -217,6 +219,7 @@ var WithRect = (function (_super) {
             this.showLine(),
             this.showPoint()));
     };
+    WithRect.contextType = context_1.context;
     return WithRect;
 }(react_1.default.Component));
 exports.WithRect = WithRect;

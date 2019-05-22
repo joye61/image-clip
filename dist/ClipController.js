@@ -32,6 +32,7 @@ var WithRect_1 = require("./WithRect");
 var WithPoint_1 = require("./WithPoint");
 var ClipArea_1 = require("./ClipArea");
 var transformValue_1 = require("./transformValue");
+var context_1 = require("./context");
 var ClipController = (function (_super) {
     __extends(ClipController, _super);
     function ClipController() {
@@ -47,31 +48,39 @@ var ClipController = (function (_super) {
             }
         };
         _this.onChange = function (rectState) {
-            _this.setState(__assign({}, rectState));
+            _this.setState(__assign({}, rectState), function () {
+                _this.props.onChange(_this.getRect());
+            });
         };
         return _this;
     }
+    ClipController.prototype.getRect = function () {
+        return transformValue_1.transformValue(this.state.p1, this.state.p2);
+    };
+    ClipController.prototype.componentDidMount = function () {
+        this.props.onChange(this.getRect());
+    };
     ClipController.prototype.render = function () {
-        var rect = transformValue_1.transformValue(this.state.p1, this.state.p2);
+        var rect = this.getRect();
         var props = {
             p1: this.state.p1,
             p2: this.state.p2,
             xmax: this.props.editWidth,
             ymax: this.props.editHeight,
-            controllSize: this.props.controllSize,
             onChange: this.onChange
         };
         var controller = null;
-        if (this.props.type === "rect") {
+        if (this.context.clipType === "rect") {
             controller = react_1.default.createElement(WithRect_1.WithRect, __assign({}, props));
         }
-        else if (this.props.type === "point") {
+        else if (this.context.clipType === "point") {
             controller = react_1.default.createElement(WithPoint_1.WithPoint, __assign({}, props));
         }
         return (react_1.default.createElement(react_1.default.Fragment, null,
             react_1.default.createElement(ClipArea_1.ClipArea, { rect: rect, imageUrl: this.props.imageUrl, editWidth: this.props.editWidth, editHeight: this.props.editHeight }),
             controller));
     };
+    ClipController.contextType = context_1.context;
     return ClipController;
 }(react_1.default.Component));
 exports.ClipController = ClipController;

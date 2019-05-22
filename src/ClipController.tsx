@@ -3,7 +3,8 @@ import { WithRect } from "./WithRect";
 import { WithPoint } from "./WithPoint";
 import { ClipArea } from "./ClipArea";
 import { transformValue } from "./transformValue";
-import { ClipControllerOption, RectState } from "./types";
+import {context} from "./context";
+import { ClipControllerOption, RectState, Rect } from "./types";
 
 export class ClipController extends React.Component<ClipControllerOption, RectState> {
   state: RectState = {
@@ -17,24 +18,36 @@ export class ClipController extends React.Component<ClipControllerOption, RectSt
     }
   };
 
+  static contextType = context;
+
+  // 根据当前状态获取截取区域
+  getRect(): Rect {
+    return transformValue(this.state.p1, this.state.p2);
+  }
+
   onChange = (rectState: RectState) => {
-    this.setState({ ...rectState });
+    this.setState({ ...rectState }, () => {
+      this.props.onChange(this.getRect());
+    });
   };
 
+  componentDidMount() {
+    this.props.onChange(this.getRect());
+  }
+
   render() {
-    const rect = transformValue(this.state.p1, this.state.p2);
+    const rect = this.getRect();
     const props = {
       p1: this.state.p1,
       p2: this.state.p2,
       xmax: this.props.editWidth,
       ymax: this.props.editHeight,
-      controllSize: this.props.controllSize,
       onChange: this.onChange
     };
     let controller = null;
-    if (this.props.type === "rect") {
+    if (this.context.clipType === "rect") {
       controller = <WithRect {...props} />;
-    } else if (this.props.type === "point") {
+    } else if (this.context.clipType === "point") {
       controller = <WithPoint {...props} />;
     }
     return (

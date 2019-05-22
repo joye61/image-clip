@@ -29,6 +29,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 var transformValue_1 = require("./transformValue");
+var context_1 = require("./context");
 var WithPoint = (function (_super) {
     __extends(WithPoint, _super);
     function WithPoint() {
@@ -80,10 +81,11 @@ var WithPoint = (function (_super) {
             react_1.default.createElement("span", { className: "ImageEditor-2p ImageEditor-2p-x", style: { transform: "translate3d(" + p.x + "px, 0, 0)" } }),
             react_1.default.createElement("span", { className: "ImageEditor-2p ImageEditor-2p-y", style: { transform: "translate3d(0, " + p.y + "px, 0)" } }),
             react_1.default.createElement("span", { className: "ImageEditor-2p ImageEditor-2p-center", style: {
-                    transform: "translate3d(" + (p.x - this.props.controllSize / 2) + "px, " + (p.y -
-                        this.props.controllSize / 2) + "px, 0)",
-                    width: this.props.controllSize + "px",
-                    height: this.props.controllSize + "px"
+                    transform: "translate3d(" + (p.x - this.context.controllSize / 2) + "px, " + (p.y -
+                        this.context.controllSize / 2) + "px, 0)",
+                    width: this.context.controllSize + "px",
+                    height: this.context.controllSize + "px",
+                    borderRadius: this.context.pointType === "rounded" ? "50%" : "initial"
                 }, onMouseDown: function (e) {
                     if (_this.status === "none") {
                         _this.status = status;
@@ -97,6 +99,7 @@ var WithPoint = (function (_super) {
             this.showPoint(this.props.p1, "p1"),
             this.showPoint(this.props.p2, "p2")));
     };
+    WithPoint.contextType = context_1.context;
     return WithPoint;
 }(react_1.default.Component));
 exports.WithPoint = WithPoint;

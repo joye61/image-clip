@@ -1,10 +1,13 @@
 import React from "react";
 import { WithOption, Point } from "./types";
 import { rangeCheck } from "./transformValue";
+import { context } from "./context";
 
 type MoveStatus = "p1" | "p2" | "none";
 
 export class WithPoint extends React.Component<WithOption, {}> {
+  static contextType = context;
+
   status: MoveStatus = "none";
   x = 0;
   y = 0;
@@ -67,10 +70,11 @@ export class WithPoint extends React.Component<WithOption, {}> {
         <span
           className="ImageEditor-2p ImageEditor-2p-center"
           style={{
-            transform: `translate3d(${p.x - this.props.controllSize / 2}px, ${p.y -
-              this.props.controllSize / 2}px, 0)`,
-            width: `${this.props.controllSize}px`,
-            height: `${this.props.controllSize}px`
+            transform: `translate3d(${p.x - this.context.controllSize / 2}px, ${p.y -
+              this.context.controllSize / 2}px, 0)`,
+            width: `${this.context.controllSize}px`,
+            height: `${this.context.controllSize}px`,
+            borderRadius: this.context.pointType === "rounded" ? "50%" : "initial"
           }}
           onMouseDown={e => {
             if (this.status === "none") {

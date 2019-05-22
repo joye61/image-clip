@@ -1,0 +1,12 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var react_1 = __importDefault(require("react"));
+exports.context = react_1.default.createContext({
+    controllSize: 10,
+    clipType: "rect",
+    pointType: "rounded"
+});
+exports.Provider = exports.context.Provider, exports.Consumer = exports.context.Consumer;
