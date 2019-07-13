@@ -1,0 +1,108 @@
+.ImageClip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.ImageClip > div {
+  position: relative;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.ImageClip .ImageClip-bg {
+  width: 100%;
+  font-size: 0;
+  position: relative;
+}
+
+.ImageClip .ImageClip-bg img {
+  width: 100%;
+  height: 100%;
+}
+
+.ImageClip .ImageClip-bg::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.ImageClip .ImageEditor-2p {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ImageClip .ImageEditor-2p-x {
+  top: 0;
+  width: 0;
+  height: 100%;
+  border-left: 1px dashed #fff;
+}
+
+.ImageClip .ImageEditor-2p-y {
+  left: 0;
+  width: 100%;
+  height: 0;
+  border-top: 1px dashed #fff;
+}
+
+.ImageClip .ImageEditor-2p-center {
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.ImageClip .ImageClip-area {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+}
+
+.ImageClip .ImageClip-rect {
+  position: absolute;
+  border: 1px solid #fff;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  cursor: move;
+}
+
+.ImageClip .ImageClip-rect > span {
+  position: absolute;
+}
+
+.ImageClip .ImageClip-rect-line, .ImageClip .ImageClip-rect-point {
+  position: absolute;
+}
+
+.ImageClip .ImageClip-rect-point {
+  background-color: #fff;
+}
+
+.ImageClip .ImageClip-rect-grid-row {
+  left: 0;
+  top: 50%;
+  height: 33.3333%;
+  width: 100%;
+  border-top: 1px dashed #fff;
+  border-bottom: 1px dashed #fff;
+  transform: translate3d(0, -50%, 0);
+}
+
+.ImageClip .ImageClip-rect-grid-col {
+  top: 0;
+  left: 50%;
+  width: 33.3333%;
+  height: 100%;
+  border-left: 1px dashed #fff;
+  border-right: 1px dashed #fff;
+  transform: translate3d(-50%, 0, 0);
+}

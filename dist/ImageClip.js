@@ -17,19 +17,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var WithRect_1 = require("./WithRect");
-function getValue(value) {
-    if (typeof value === "number") {
-        return value + "px";
-    }
-    else {
-        return value;
-    }
-}
+var ClipController_1 = require("./ClipController");
+var context_1 = require("./context");
 var ImageClip = (function (_super) {
     __extends(ImageClip, _super);
-    function ImageClip() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function ImageClip(props) {
+        var _this = _super.call(this, props) || this;
         _this.state = {
             loaded: false
         };
@@ -39,10 +32,10 @@ var ImageClip = (function (_super) {
         _this.scaleWidth = 0;
         _this.scaleHeight = 0;
         _this.scale = 1;
+        console.log(111, _this.context);
         return _this;
     }
     ImageClip.prototype.computeScaleSize = function () {
-        console.log(this);
         var editorWidth = this.props.containerWidth - this.props.containerPadding * 2;
         var editorHeight = this.props.containerHeight - this.props.containerPadding * 2;
         if (editorWidth / editorHeight > this.originWidth / this.originHeight) {
@@ -74,9 +67,13 @@ var ImageClip = (function (_super) {
         };
     };
     ImageClip.prototype.render = function () {
+        var _this = this;
         if (this.state.loaded === false) {
             return null;
         }
+        this.context.controllSize = this.props.controllSize || this.context.controllSize;
+        this.context.clipType = this.props.clipType || this.context.clipType;
+        this.context.pointType = this.props.pointType || this.context.pointType;
         return (react_1.default.createElement("div", { className: "ImageClip", style: {
                 width: this.props.containerWidth + "px",
                 height: this.props.containerHeight + "px",
@@ -88,14 +85,28 @@ var ImageClip = (function (_super) {
                 } },
                 react_1.default.createElement("div", { className: "ImageClip-bg" },
                     react_1.default.createElement("img", { src: this.imageUrl, alt: "", draggable: false })),
-                react_1.default.createElement(WithRect_1.WithRect, { editWidth: this.scaleWidth, editHeight: this.scaleHeight, controllSize: this.props.controllSize, imageUrl: this.imageUrl }))));
+                react_1.default.createElement(ClipController_1.ClipController, { editWidth: this.scaleWidth, editHeight: this.scaleHeight, imageUrl: this.imageUrl, onChange: function (rect) {
+                        if (_this.props.onChange && typeof _this.props.onChange === "function") {
+                            _this.props.onChange({
+                                imageWidth: _this.originWidth,
+                                imageHeight: _this.originHeight,
+                                src: _this.imageUrl,
+                                rect: {
+                                    x: rect.x * _this.scale,
+                                    y: rect.y * _this.scale,
+                                    width: rect.width * _this.scale,
+                                    height: rect.height * _this.scale
+                                }
+                            });
+                        }
+                    } }))));
     };
     ImageClip.defaultProps = {
         containerPadding: 10,
         containerWidth: 500,
-        containerHeight: 500,
-        controllSize: 10
+        containerHeight: 500
     };
+    ImageClip.contextType = context_1.context;
     return ImageClip;
 }(react_1.default.Component));
 exports.ImageClip = ImageClip;

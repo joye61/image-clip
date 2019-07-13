@@ -1,66 +1,97 @@
 import React from "react";
-import { WithOption, WithState, Point, Rect } from "./types";
+import { rangeCheck } from "./transformValue";
+import { context } from "./context";
 
-import { ControllPoint } from "./ControllPoint";
-import { ClipArea } from "./ClipArea";
+type MoveStatus = "p1" | "p2" | "none";
 
-export class With2Points extends React.Component<WithOption, WithState> {
-  state: WithState = {
-    p1: {
-      x: 0,
-      y: 0
-    },
-    p2: {
-      x: this.props.editWidth,
-      y: this.props.editHeight
+export class WithPoint extends React.Component<WithOption, {}> {
+  static contextType = context;
+
+  status: MoveStatus = "none";
+  x = 0;
+  y = 0;
+
+  controllMove = (e: MouseEvent) => {
+    // 指针偏移
+    const offsetX = e.clientX - this.x;
+    const offsetY = e.clientY - this.y;
+
+    const p1 = { ...this.props.p1 };
+    const p2 = { ...this.props.p2 };
+
+    switch (this.status) {
+      case "p1":
+        p1.x += offsetX;
+        p1.y += offsetY;
+        p1.x = rangeCheck(p1.x, this.props.xmax);
+        p1.y = rangeCheck(p1.y, this.props.ymax);
+        break;
+      case "p2":
+        p2.x += offsetX;
+        p2.y += offsetY;
+        p2.x = rangeCheck(p2.x, this.props.xmax);
+        p2.y = rangeCheck(p2.y, this.props.ymax);
+        break;
+      default:
+        return;
     }
+
+    this.x = e.clientX;
+    this.y = e.clientY;
+    this.props.onChange({ p1, p2 });
   };
 
-  getTransformValue(): Rect {
-    const width = Math.abs(this.state.p1.x - this.state.p2.x);
-    const height = Math.abs(this.state.p1.y - this.state.p2.y);
-    const x = this.state.p1.x < this.state.p2.x ? this.state.p1.x : this.state.p2.x;
-    const y = this.state.p1.y < this.state.p2.y ? this.state.p1.y : this.state.p2.y;
-    return { x, y, width, height };
+  controllUp = () => {
+    this.status = "none";
+  };
+
+  componentDidMount() {
+    document.documentElement.addEventListener("mousemove", this.controllMove);
+    document.documentElement.addEventListener("mouseup", this.controllUp);
   }
 
-  /**
-   * 点改变位置时触发
-   * @param p Point 当前点的坐标
-   * @param index number 当前点的索引
-   */
-  onPointChange(p: Point, index: number) {
-    this.setState({ [`p${index}`]: p });
+  componentWillUnmount() {
+    document.documentElement.removeEventListener("mousemove", this.controllMove);
+    document.documentElement.removeEventListener("mouseup", this.controllUp);
   }
 
-  showPoints() {
-    const points = [this.state.p1, this.state.p2];
-    return points.map((p: Point, index: number) => {
-      return (
-        <ControllPoint
-          key={index}
-          x={p.x}
-          y={p.y}
-          xmax={this.props.editWidth}
-          ymax={this.props.editHeight}
-          controllSize={this.props.controllSize as number}
-          onChange={(p: Point) => this.onPointChange(p, index + 1)}
+  showPoint(p: Point, status: MoveStatus) {
+    return (
+      <>
+        <span
+          className="ImageEditor-2p ImageEditor-2p-x"
+          style={{ transform: `translate3d(${p.x}px, 0, 0)` }}
         />
-      );
-    });
+        <span
+          className="ImageEditor-2p ImageEditor-2p-y"
+          style={{ transform: `translate3d(0, ${p.y}px, 0)` }}
+        />
+        <span
+          className="ImageEditor-2p ImageEditor-2p-center"
+          style={{
+            transform: `translate3d(${p.x - this.context.controllSize / 2}px, ${p.y -
+              this.context.controllSize / 2}px, 0)`,
+            width: `${this.context.controllSize}px`,
+            height: `${this.context.controllSize}px`,
+            borderRadius: this.context.pointType === "rounded" ? "50%" : "initial"
+          }}
+          onMouseDown={e => {
+            if (this.status === "none") {
+              this.status = status;
+              this.x = e.clientX;
+              this.y = e.clientY;
+            }
+          }}
+        />
+      </>
+    );
   }
 
   render() {
-    const rect = this.getTransformValue();
     return (
       <>
-        <ClipArea
-          rect={rect}
-          imageUrl={this.props.imageUrl}
-          editWidth={this.props.editWidth}
-          editHeight={this.props.editHeight}
-        />
-        {this.showPoints()}
+        {this.showPoint(this.props.p1, "p1")}
+        {this.showPoint(this.props.p2, "p2")}
       </>
     );
   }

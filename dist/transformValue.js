@@ -8,3 +8,9 @@ function transformValue(p1, p2) {
     return { x: x, y: y, width: width, height: height };
 }
 exports.transformValue = transformValue;
+function rangeCheck(n, max) {
+    n = n < 0 ? 0 : n;
+    n = n > max ? max : n;
+    return n;
+}
+exports.rangeCheck = rangeCheck;

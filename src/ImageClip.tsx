@@ -1,23 +1,15 @@
-import { ImageClipOption, ImageClipState } from "./types";
 import React from "react";
-import { WithRect } from "./WithRect";
-import { With2Points } from "./WithPoint";
-
-function getValue(value: number | string): string {
-  if (typeof value === "number") {
-    return value + "px";
-  } else {
-    return value;
-  }
-}
+import { ClipController } from "./ClipController";
+import { context } from "./context";
 
 export class ImageClip extends React.Component<ImageClipOption, ImageClipState> {
   static defaultProps = {
     containerPadding: 10,
     containerWidth: 500,
-    containerHeight: 500,
-    controllSize: 10
+    containerHeight: 500
   };
+
+  static contextType = context;
 
   state: ImageClipState = {
     loaded: false
@@ -37,9 +29,10 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
   scale = 1;
 
   computeScaleSize() {
-    console.log(this);
-    const editorWidth = (this.props.containerWidth as number) - (this.props.containerPadding as number) * 2;
-    const editorHeight = (this.props.containerHeight as number) - (this.props.containerPadding as number) * 2;
+    const editorWidth =
+      (this.props.containerWidth as number) - (this.props.containerPadding as number) * 2;
+    const editorHeight =
+      (this.props.containerHeight as number) - (this.props.containerPadding as number) * 2;
 
     if (editorWidth / editorHeight > this.originWidth / this.originHeight) {
       // 以高度为准
@@ -78,6 +71,10 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
       return null;
     }
 
+    this.context.controllSize = this.props.controllSize || this.context.controllSize;
+    this.context.clipType = this.props.clipType || this.context.clipType;
+    this.context.pointType = this.props.pointType || this.context.pointType;
+
     // 图片加载完成之后显示编辑器框
     return (
       <div
@@ -95,13 +92,27 @@ export class ImageClip extends React.Component<ImageClipOption, ImageClipState> 
           }}
         >
           <div className="ImageClip-bg">
-            <img src={this.imageUrl} alt="" draggable={false}/>
+            <img src={this.imageUrl} alt="" draggable={false} />
           </div>
-          <WithRect
+          <ClipController
             editWidth={this.scaleWidth}
             editHeight={this.scaleHeight}
-            controllSize={this.props.controllSize as number}
             imageUrl={this.imageUrl}
+            onChange={(rect: Rect) => {
+              if (this.props.onChange && typeof this.props.onChange === "function") {
+                this.props.onChange({
+                  imageWidth: this.originWidth,
+                  imageHeight: this.originHeight,
+                  src: this.imageUrl,
+                  rect: {
+                    x: rect.x * this.scale,
+                    y: rect.y * this.scale,
+                    width: rect.width * this.scale,
+                    height: rect.height * this.scale
+                  }
+                });
+              }
+            }}
           />
         </div>
       </div>

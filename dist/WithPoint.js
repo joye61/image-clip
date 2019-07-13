@@ -12,53 +12,94 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
-var ControllPoint_1 = require("./ControllPoint");
-var ClipArea_1 = require("./ClipArea");
-var With2Points = (function (_super) {
-    __extends(With2Points, _super);
-    function With2Points() {
+var transformValue_1 = require("./transformValue");
+var context_1 = require("./context");
+var WithPoint = (function (_super) {
+    __extends(WithPoint, _super);
+    function WithPoint() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.state = {
-            p1: {
-                x: 0,
-                y: 0
-            },
-            p2: {
-                x: _this.props.editWidth,
-                y: _this.props.editHeight
+        _this.status = "none";
+        _this.x = 0;
+        _this.y = 0;
+        _this.controllMove = function (e) {
+            var offsetX = e.clientX - _this.x;
+            var offsetY = e.clientY - _this.y;
+            var p1 = __assign({}, _this.props.p1);
+            var p2 = __assign({}, _this.props.p2);
+            switch (_this.status) {
+                case "p1":
+                    p1.x += offsetX;
+                    p1.y += offsetY;
+                    p1.x = transformValue_1.rangeCheck(p1.x, _this.props.xmax);
+                    p1.y = transformValue_1.rangeCheck(p1.y, _this.props.ymax);
+                    break;
+                case "p2":
+                    p2.x += offsetX;
+                    p2.y += offsetY;
+                    p2.x = transformValue_1.rangeCheck(p2.x, _this.props.xmax);
+                    p2.y = transformValue_1.rangeCheck(p2.y, _this.props.ymax);
+                    break;
+                default:
+                    return;
             }
+            _this.x = e.clientX;
+            _this.y = e.clientY;
+            _this.props.onChange({ p1: p1, p2: p2 });
+        };
+        _this.controllUp = function () {
+            _this.status = "none";
         };
         return _this;
     }
-    With2Points.prototype.getTransformValue = function () {
-        var width = Math.abs(this.state.p1.x - this.state.p2.x);
-        var height = Math.abs(this.state.p1.y - this.state.p2.y);
-        var x = this.state.p1.x < this.state.p2.x ? this.state.p1.x : this.state.p2.x;
-        var y = this.state.p1.y < this.state.p2.y ? this.state.p1.y : this.state.p2.y;
-        return { x: x, y: y, width: width, height: height };
+    WithPoint.prototype.componentDidMount = function () {
+        document.documentElement.addEventListener("mousemove", this.controllMove);
+        document.documentElement.addEventListener("mouseup", this.controllUp);
     };
-    With2Points.prototype.onPointChange = function (p, index) {
-        var _a;
-        this.setState((_a = {}, _a["p" + index] = p, _a));
+    WithPoint.prototype.componentWillUnmount = function () {
+        document.documentElement.removeEventListener("mousemove", this.controllMove);
+        document.documentElement.removeEventListener("mouseup", this.controllUp);
     };
-    With2Points.prototype.showPoints = function () {
+    WithPoint.prototype.showPoint = function (p, status) {
         var _this = this;
-        var points = [this.state.p1, this.state.p2];
-        return points.map(function (p, index) {
-            return (react_1.default.createElement(ControllPoint_1.ControllPoint, { key: index, x: p.x, y: p.y, xmax: _this.props.editWidth, ymax: _this.props.editHeight, controllSize: _this.props.controllSize, onChange: function (p) { return _this.onPointChange(p, index + 1); } }));
-        });
-    };
-    With2Points.prototype.render = function () {
-        var rect = this.getTransformValue();
         return (react_1.default.createElement(react_1.default.Fragment, null,
-            react_1.default.createElement(ClipArea_1.ClipArea, { rect: rect, imageUrl: this.props.imageUrl, editWidth: this.props.editWidth, editHeight: this.props.editHeight }),
-            this.showPoints()));
+            react_1.default.createElement("span", { className: "ImageEditor-2p ImageEditor-2p-x", style: { transform: "translate3d(" + p.x + "px, 0, 0)" } }),
+            react_1.default.createElement("span", { className: "ImageEditor-2p ImageEditor-2p-y", style: { transform: "translate3d(0, " + p.y + "px, 0)" } }),
+            react_1.default.createElement("span", { className: "ImageEditor-2p ImageEditor-2p-center", style: {
+                    transform: "translate3d(" + (p.x - this.context.controllSize / 2) + "px, " + (p.y -
+                        this.context.controllSize / 2) + "px, 0)",
+                    width: this.context.controllSize + "px",
+                    height: this.context.controllSize + "px",
+                    borderRadius: this.context.pointType === "rounded" ? "50%" : "initial"
+                }, onMouseDown: function (e) {
+                    if (_this.status === "none") {
+                        _this.status = status;
+                        _this.x = e.clientX;
+                        _this.y = e.clientY;
+                    }
+                } })));
     };
-    return With2Points;
+    WithPoint.prototype.render = function () {
+        return (react_1.default.createElement(react_1.default.Fragment, null,
+            this.showPoint(this.props.p1, "p1"),
+            this.showPoint(this.props.p2, "p2")));
+    };
+    WithPoint.contextType = context_1.context;
+    return WithPoint;
 }(react_1.default.Component));
-exports.With2Points = With2Points;
+exports.WithPoint = WithPoint;
